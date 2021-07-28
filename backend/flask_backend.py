@@ -30,7 +30,8 @@ def receive_posted_pycode():
 def execute_pycode():
 
     with open("output.txt", "w") as output:
-        output = subprocess.check_call(["python", "pycode.py"], stdout=output)
+        output = subprocess.check_call(["python", "pycode.py"], stdout=output) # TODO make successes more consistent,
+                                                                               # have it return output as JSON?
         # output = proc.stdout.read()
         print(output)
 

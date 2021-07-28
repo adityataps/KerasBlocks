@@ -22,7 +22,7 @@ const INITIAL_TOOLBOX_JSON = {
                 },
                 {
                     kind: "block",
-                    type: "layer"
+                    type: "dense"
                 },
                 {
                     kind: "block",
@@ -39,6 +39,10 @@ const INITIAL_TOOLBOX_JSON = {
                 {
                     kind: "block",
                     type: "process_model"
+                },
+                {
+                    kind: "block",
+                    type: "summary"
                 }
                 
 

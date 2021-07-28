@@ -37,50 +37,40 @@ Blockly.Blocks['sequential'] = {
 Blockly.Python['sequential'] = function(block) {
   var statements_layers = Blockly.Python.statementToCode(block, 'layers');
   // TODO: Assemble Python into code variable.
-  // statements_layers = "~" + statements_layers
-  // statements_layers = statements_layers.split("~")
   var code = "keras.Sequential([\n";
-  // for (let i = 0; i < 3; i++) {
-    code += "" + statements_layers;
-  // }
+  code += "" + statements_layers;
   code += "])\n";
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.Python.ORDER_NONE];
 };
 
-Blockly.Blocks['layer'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField("Layer")
-        .appendField(new Blockly.FieldTextInput("layer_name"), "layer_name")
-        .appendField("Number of nodes")
-        .appendField(new Blockly.FieldNumber(1, 1), "num_nodes")
-        .appendField("Activation")
-        .appendField(new Blockly.FieldDropdown([
-            ["relu","activations.relu"],
-          ["sigmoid","activations.sigmoid"],
-          ["softmax","activations.softmax"],
-          ["softplus","activations.softplus"],
-          ["softsign","activations.softsign"],
-          ["tanh","activations.tanh"],
-          ["selu","activations.selu"],
-          ["elu","activations.elu"],
-          ["exponential","activations.exponential"]]), "activation");
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour(240);
- this.setTooltip("Layer for setting up the neural network");
- this.setHelpUrl("");
-  }
+Blockly.Blocks['dense'] = {
+    init: function() {
+        this.appendDummyInput()
+            .appendField("Dense layer")
+            .appendField(new Blockly.FieldTextInput("layer_name"), "layer_name")
+            .appendField("Number of nodes")
+            .appendField(new Blockly.FieldNumber(1, 1), "num_nodes")
+            .appendField("Activation")
+            .appendField(new Blockly.FieldDropdown([["relu","activations.relu"], ["sigmoid","activations.sigmoid"], ["softmax","activations.softmax"], ["softplus","activations.softplus"], ["softsign","activations.softsign"], ["tanh","activations.tanh"], ["selu","activations.selu"], ["elu","activations.elu"], ["exponential","activations.exponential"]]), "activation");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(240);
+        this.setTooltip("Layer for setting up the neural network");
+        this.setHelpUrl("");
+    }
 };
 
-Blockly.Python['layer'] = function(block) {
-  var text_layer_name = block.getFieldValue('layer_name');
-  var number_num_nodes = block.getFieldValue('num_nodes');
-  var dropdown_activation = block.getFieldValue('activation');
-  // TODO: Assemble Python into code variable.
-  var code = `layers.Dense(${number_num_nodes}, activation=${dropdown_activation}, name="${text_layer_name}"),\n`;
-  return code;
+Blockly.Python['dense'] = function(block) {
+    var text_layer_name = block.getFieldValue('layer_name');
+    var number_num_nodes = block.getFieldValue('num_nodes');
+    var dropdown_activation = block.getFieldValue('activation');
+    // TODO: Assemble Python into code variable.
+    var code = `layers.Dense(
+                ${number_num_nodes},
+                activation=${dropdown_activation},
+                name="${text_layer_name}"),\n`;
+    return code;
 };
 
 Blockly.Blocks['add_layer'] = {
@@ -107,25 +97,28 @@ Blockly.Python['add_layer'] = function(block) {
 };
 
 Blockly.Blocks['input'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField("Input");
-    this.appendStatementInput("Dimensions")
-        .setCheck("Number")
-        .appendField("Dimensions");
-    this.setOutput(true, null);
-    this.setColour(255);
- this.setTooltip("dimensions (np)");
- this.setHelpUrl("");
-  }
+    init: function() {
+        this.appendValueInput("dimensions")
+            .setCheck("Array")
+            .appendField("Input layer with dimensions");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(255);
+        this.setTooltip("dimensions (np)");
+        this.setHelpUrl("");
+    }
 };
 
 Blockly.Python['input'] = function(block) {
-  var statements_dimensions = Blockly.Python.statementToCode(block, 'Dimensions');
-  // TODO: Assemble Python into code variable.
-  var code = '...';
-  // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.Python.ORDER_NONE];
+    var value_dimensions = Blockly.Python.valueToCode(block, 'dimensions', Blockly.Python.ORDER_ATOMIC);
+    // TODO: Assemble Python into code variable.
+    let dimensions = ""
+    if (value_dimensions) {
+        dimensions = Array.prototype.join.call(value_dimensions, "")
+    }
+    dimensions = dimensions.substr(1, dimensions.length - 2)
+    var code = `layers.InputLayer((${dimensions})),\n`;
+    return code;
 };
 
 Blockly.Blocks['process_layer'] = {
@@ -175,3 +168,24 @@ Blockly.Python['process_model'] = function(block) {
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.Python.ORDER_NONE];
 };
+
+Blockly.Blocks['summary'] = {
+    init: function() {
+        this.appendValueInput("NAME")
+            .setCheck(null)
+            .appendField("Print Summary of Model ");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour(135);
+        this.setTooltip("Prints the architecture for the model");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Python['summary'] = function(block) {
+    var value_name = Blockly.Python.valueToCode(block, 'NAME', Blockly.Python.ORDER_ATOMIC);
+    // TODO: Assemble Python into code variable.
+    var code = `${value_name}.summary()\n`;
+    return code;
+};
+

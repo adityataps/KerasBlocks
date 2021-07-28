@@ -9,22 +9,24 @@ import * as ReactDOM from "react-dom";
 
 function BlocklyInject() {
     const MY_TOOLBOX = ConfigFiles.INITIAL_TOOLBOX_JSON
-    const [xml, setXml] = useState();
+    // const [xml, setXml] = useState();
+    // const [pyCode, setPyCode] = useState("");
 
     const onWorkspaceChange = React.useCallback((workspace) => {
         workspace.registerButtonCallback("myFirstButtonPressed", () => {
             alert("button is pressed");
         });
-        const newXml = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
-        document.getElementById("generated-xml").innerText = newXml;
+
+        // const newXml = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
+        // document.getElementById("generated-xml").innerText = newXml;
 
         const code = Blockly.Python.workspaceToCode(workspace);
         document.getElementById("code").value = code;
     }, []);
 
-    const onXmlChange = React.useCallback((newXml) => {
-        document.getElementById("generated-xml").innerText = newXml;
-    }, []);
+    // const onXmlChange = React.useCallback((newXml) => {
+    //     document.getElementById("generated-xml").innerText = newXml;
+    // }, []);
 
     return (
         <BlocklyWorkspace
@@ -40,7 +42,7 @@ function BlocklyInject() {
             initialXml={ConfigFiles.INITIAL_XML}
             className={"fill-height"}
             onWorkspaceChange={onWorkspaceChange}
-            onXmlChange={onXmlChange}
+            // onXmlChange={onXmlChange}
         />
     )
 }
